@@ -1,5 +1,4 @@
 import os.path
-from email.mime.text import MIMEText
 from email.message import EmailMessage
 import base64
 import mimetypes
