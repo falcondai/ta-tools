@@ -92,10 +92,11 @@ def send(service, user_id, message):
 
 if __name__ == '__main__':
     # Parameters
-    sheet_path = 'hw1.tsv'
-    pdf_dir = r'Homework 1'
-    email_subject = 'Graded homework 1 from TTIC 31250'
-    solution_url = 'https://home.ttic.edu/~avrim/MLT22/soln1.pdf'
+    sheet_path = 'students.tsv'
+    pdf_dir = r'Homework 2'
+    email_subject = 'Graded homework 2 from TTIC 31250'
+    solution_url = 'https://home.ttic.edu/~avrim/MLT22/soln2.pdf'
+    attachment_name_fmt = '%s - HW2 graded.pdf'
 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
@@ -127,14 +128,16 @@ if __name__ == '__main__':
             file_sn = filename.split(' - ')[0].strip()
             name_pdfs[file_sn] = pdf_path
 
+        i = 0
         with open(sheet_path, 'r') as sheet_fp:
             reader = csv.reader(sheet_fp, delimiter='\t')
             for row in reader:
                 # Tab-separated.
                 student_email, student_name = row
+
                 if student_name in name_pdfs:
                     pdf_path = name_pdfs[student_name]
-                    attachment_name = ' - '.join([student_name, 'HW1 graded.pdf'])
+                    attachment_name = attachment_name_fmt % student_name
                     msg = create_message(
                         sender='dai@ttic.edu',
                         to=student_email,
@@ -143,8 +146,8 @@ if __name__ == '__main__':
                         attachment_path=pdf_path,
                         attachment_name=attachment_name,
                         )
-
-                    print('Sent', student_name, student_email, attachment_name, pdf_path)
+                    i += 1
+                    print(i, 'Sent', student_name, student_email, attachment_name, pdf_path)
                     # create_draft(service, 'me', msg)
                     send(service, 'me', msg)
                 else:
